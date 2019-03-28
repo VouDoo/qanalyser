@@ -1,0 +1,2 @@
+# Include Jinja2 templates
+graft qanalyser/templates
