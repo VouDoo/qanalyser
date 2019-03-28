@@ -21,7 +21,7 @@ VERSION = {
     'relnum': 0,
     'post': False,  # True if in post-release, else False
     'postnum': 0,
-    'dev': True,  # True if in development, else False
+    'dev': False,  # True if in development, else False
     'devnum': 0
 }
 
