@@ -15,13 +15,13 @@ from .utils.version import get_version
 
 VERSION = {
     'major': 0,
-    'minor': 1,
+    'minor': 2,
     'micro': 0,
     'release': 'alpha',  # "alpha", "beta", "release-candidate" or "final"
     'relnum': 0,
     'post': False,  # True if in post-release, else False
     'postnum': 0,
-    'dev': False,  # True if in development, else False
+    'dev': True,  # True if in development, else False
     'devnum': 0
 }
 
