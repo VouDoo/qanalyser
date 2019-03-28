@@ -1,0 +1,2 @@
+pyodbc
+Jinja2

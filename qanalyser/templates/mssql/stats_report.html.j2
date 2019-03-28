@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Qanalyser - Query Statistics Report for Microsoft SQL Server</title>
+<meta charset="UTF-8"/>
+<meta name="pdfkit-page-size" content="A4"/>
+<meta name="pdfkit-orientation" content="Landscape"/>
+<meta name="pdfkit-margin-top" content="3"/>
+<meta name="pdfkit-margin-right" content="3"/>
+<meta name="pdfkit-margin-bottom" content="3"/>
+<meta name="pdfkit-margin-left" content="3"/>
+<meta name="pdfkit-encoding" content="UTF-8"/>
+<style>
+    body {
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 16px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th {
+        font-size: 14px;
+        background-color: aquamarine;
+    }
+    td {
+        font-size: 11px;
+        background-color: azure;
+    }
+    th, td {
+        border: 1px solid mediumturquoise;
+        padding: 4px;
+    }
+    th.special {
+        background-color: lightsalmon;
+        border: 15px solid lightsalmon;
+        padding: 0;
+    }
+    td.special {
+        background-color: seashell;
+        border: 1px solid lightsalmon;
+    }
+    .query-output {
+        font-family: "Lucida Console", Monaco, monospace;
+    }
+    .sql-query-table-cell {
+        white-space: pre-wrap;
+        word-break: break-all;
+        width: 50%;
+    }
+    .new-page-before {
+        page-break-before: always;
+    }
+    .new-page-after {
+        page-break-after: always;
+    }
+    .right {
+        text-align: right;
+    }
+    .center {
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+    <p class="right">Reported the <b>{{ report_date }}</b> at <b>{{ report_time }}</b></p>
+    <h1>Qanalyser - Query Statistics Report for Microsoft SQL Server</h1>
+    <h2>Database Information</h2>
+    <p>Database name: {{ database }}</p>
+    <p>Hosted on: {{ server }}</p>
+    <h2>Report Summary</h2>
+    <ul>
+        {%- for query_result in queries_result %}
+        <li>
+            <a href="#{{ query_result.order_by_column_name | replace(' ', '-') }}">Top {{ top_limit }} queries by {{ query_result.order_by_column_name }}</a>
+        </li>
+        {%- endfor %}
+    </ul>
+    {%- for query_result in queries_result %}
+    <table class="new-page-before">
+        <thead>
+            <tr>
+                <th colspan={{ query_result.columns|length + 1 }} class="special">
+                    <a id="{{ query_result.order_by_column_name | replace(' ', '-') }}"></a>Top {{ top_limit }} queries by {{ query_result.order_by_column_name }}
+                </th>
+            </tr>
+            <tr>
+                <th>Order</th>
+                {%- for column in query_result.columns %}
+                {%- if loop.index == query_result.order_by_column_index + 1 %}
+                <th class="special">{{ query_result.order_by_column_name }}</th>
+                {%- else %}
+                <th>{{ column }}</th>
+                {%- endif %}
+                {%- endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {%- for row in query_result.rows %}
+            <tr>
+                <td class="center">{{ loop.index }}</td>
+                {%- for data in row %}
+                {%- if loop.index == 1 %}
+                <td class="query-output sql-query-table-cell">
+                {%- elif loop.index == query_result.order_by_column_index + 1 -%}
+                <td class="query-output special">
+                {%- else %}
+                <td class="query-output">
+                {%- endif %}
+{{ data | replace('&', '&amp;') | replace('<', '&lt;') | replace('>', '&gt;') }}
+                </td>
+                {%- endfor %}
+            </tr>
+            {%- endfor %}
+        </tbody>
+    </table>
+    {%- endfor %}
+</body>
+</html>

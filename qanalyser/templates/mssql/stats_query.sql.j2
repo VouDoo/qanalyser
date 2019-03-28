@@ -1,0 +1,34 @@
+SELECT TOP {{ top_limit }}
+    SUBSTRING(
+        QT.TEXT,
+        (
+            QS.statement_start_offset / 2
+        ) + 1,
+        (
+            (
+                CASE QS.statement_end_offset
+                WHEN -1 THEN DATALENGTH(QT.TEXT)
+                ELSE QS.statement_end_offset
+                END - QS.statement_start_offset
+            ) / 2
+        ) + 1
+    ) AS sql_query,
+    QS.execution_count,
+    QS.total_logical_reads,
+    QS.last_logical_reads,
+    QS.total_logical_writes,
+    QS.last_logical_writes,
+    QS.total_worker_time,
+    QS.last_worker_time,
+    QS.total_elapsed_time / 1000000 AS total_elapsed_time_in_second,
+    QS.last_elapsed_time / 1000000 AS last_elapsed_time_in_second,
+    QS.last_execution_time
+    -- qp.query_plan
+FROM
+    sys.dm_exec_query_stats QS
+    CROSS APPLY sys.dm_exec_sql_text(QS.sql_handle) QT
+    CROSS APPLY sys.dm_exec_query_plan(QS.plan_handle) qp
+WHERE
+    QP.dbid = DB_ID('{{ database }}')
+ORDER BY
+    QS.{{ order_by }} DESC
