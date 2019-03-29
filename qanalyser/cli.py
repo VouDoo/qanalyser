@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # All modules below are part of standard distribution for python
-from sys import exit, stderr
+import sys
 
 
 class cli():
@@ -14,7 +14,7 @@ class cli():
         if not isdir(self.args.save_html):
             print(
                 'the path referred in --save-html is not a directory',
-                file=stderr
+                file=sys.stderr
             )
 
     def _built_parser(self):
@@ -26,8 +26,8 @@ class cli():
             'a simple tool for analyzing queries in databases'
         )
         parser_epilog = (
-            'If you encounter any issue, '
-            'please, log an issue on GitHub.'
+            'If you encounter any problems, '
+            'please log an issue on GitHub.'
         )
         parser = argparse.ArgumentParser(
             description=parser_desc,
@@ -36,7 +36,11 @@ class cli():
         parser.add_argument(
             'dbms',
             type=str,
-            choices=['mssql', 'openedge', 'oracle'],
+            choices=[
+                'mssql',
+                'openedge',
+                'oracle'
+            ],
             help=(
                 'select the DBMS'
             )
@@ -78,7 +82,7 @@ class cli():
             type=str,
             required=True,
             help=(
-                'Number of top queries'
+                'limit number of top queries'
             )
         )
         parser.add_argument(
@@ -99,7 +103,6 @@ class cli():
 
 def main():
     from os.path import join as join_path
-
     # Application modules
     from .mssql import mssql_database
 
@@ -125,16 +128,10 @@ def main():
             file_stream.write(html)
 
     elif c.args.dbms == 'openedge':
-        print('To be developed.')
+        print('Progress OpenEdge is not supported yet.')
 
     elif c.args.dbms == 'oracle':
-        print('To be developed.')
-
-    else:
-        print(
-            'Incorrect referred DBMS.',
-            file=stderr
-        )
+        print('Oracle is not supported yet.')
 
     # Exit the application without error
-    exit(0)
+    sys.exit(0)
