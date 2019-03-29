@@ -119,7 +119,7 @@ class cli():
             return formated_path
 
 
-def main():
+def run():
     # Application modules
     from .mssql import mssql_database
 
