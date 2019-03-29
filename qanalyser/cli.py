@@ -7,15 +7,8 @@ import sys
 
 class cli():
     def __init__(self):
-        from os.path import isdir
-
         self.args = self._built_parser().parse_args()
-        self.args.save_html = self._format_path(self.args.save_html)
-        if not isdir(self.args.save_html):
-            print(
-                'the path referred in --save-html is not a directory',
-                file=sys.stderr
-            )
+        self.html_file_path = self._gen_html_file_path(self.args.save_html)
 
     def _built_parser(self):
         import argparse
@@ -90,7 +83,7 @@ class cli():
             type=str,
             required=True,
             help=(
-                'save HTML reports in a directory'
+                'HTML report path'
             )
         )
         return parser
@@ -100,9 +93,33 @@ class cli():
 
         return normcase(normpath(path))
 
+    def _gen_html_file_path(self, path):
+        from os.path import isdir
+        from os.path import join
+
+        default_filename = '{dbms}_{server}_{database}_report.html'.format(
+            dbms=self.args.dbms,
+            server=self.args.server,
+            database=self.args.database
+        )
+        filename_extentions = (
+            '.html',
+            '.htm'
+        )
+
+        formated_path = self._format_path(path)
+        if isdir(formated_path):
+            return join(
+                formated_path,
+                default_filename
+            )
+        else:
+            if not formated_path.endswith(filename_extentions):
+                formated_path += '.html'
+            return formated_path
+
 
 def main():
-    from os.path import join as join_path
     # Application modules
     from .mssql import mssql_database
 
@@ -117,13 +134,7 @@ def main():
             c.args.top_limit
         )
         html = db_object.stats_report_html()
-        html_file = join_path(
-            c.args.save_html,
-            '{server}_{database}_mssql_report.html'.format(
-                server=db_object.server,
-                database=db_object.database
-            )
-        )
+        html_file = c.html_file_path
         with open(html_file, 'w+') as file_stream:
             file_stream.write(html)
 
