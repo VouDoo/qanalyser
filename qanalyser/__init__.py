@@ -15,7 +15,7 @@ from .utils.version import get_version
 
 VERSION = {
     'major': 0,
-    'minor': 1,
+    'minor': 2,
     'micro': 0,
     'release': 'alpha',  # "alpha", "beta", "release-candidate" or "final"
     'relnum': 0,
