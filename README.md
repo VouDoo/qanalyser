@@ -2,7 +2,7 @@
 
 ## Description
 
-Qanalyser is a Python module developed for QAD Precision to analyze queries in databases.
+Qanalyser is a Python module developed for QAD Precision to analyze queries in a remote database.
 
 This module is available for the following database management systems (DBMS):
 
@@ -15,7 +15,7 @@ Futur releases will support:
 
 It uses Open Database Connectivity (ODBC) for accessing database management systems (DBMS).
 
-After the analysis, HTML reports are generated.
+After the analysis, an HTML report is generated with "top" tables depending on criterias.
 
 ## Installation
 
@@ -31,4 +31,4 @@ Start to use Qanalyser as a Python module with the following command:
 
 ## Questions
 
-If you have any further questions, please do not hesitate to contact the author.
+If you have any further questions, please do not hesitate to contact us on Github.
