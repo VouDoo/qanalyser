@@ -12,21 +12,36 @@ These following components **MUST** be installed on your system.
 
 Ensure that **Python version 3.4 or newer** is installed on your system.
 
-#### Install Python 3.4 on RHEL6
+#### Linux
 
-Run the command:
+Install the following packages:
 
-    sudo yum install python34 python34-libs python34-devel python34-pip
+- python3
+- python3-libs
+- python3-devel
+- python3-pip
+
+> Package names can vary depending on your Linux distribution.
+
+#### Windows
+
+Download and install the latest version of Python for Windows on <https://www.python.org/downloads/>
 
 ### UNIX ODBC
 
-> This package is required for installing the Python module "pyodbc".
+> ODBC is required for using the Python module "pyodbc".
 
-#### Install UNIX ODBC on RHEL6
+#### Linux
 
-Run the command:
+Install the following package:
 
-    sudo yum install unixODBC-devel
+- unixODBC-devel
+
+> Package names can vary depending on your Linux distribution.
+
+#### Windows
+
+ODBC is part of the recent Windows operating systems.
 
 ### PyODBC
 
@@ -37,6 +52,8 @@ run the command:
 
     pip install pyodbc
 
+> Ensure that pip uses the correct version of Python
+
 ### Jinja2
 
 > This module is automatically installed during the Qanalyser installation.
@@ -46,13 +63,15 @@ run the command:
 
     pip install Jinja2
 
+> Ensure that pip uses the correct version of Python
+
 ### ODBC Driver for SQL Server
 
 Follow the steps to install the ODBC Driver 17 for SQL Server.
 
 > You do not need to install the optional packages.
 
-How to install the Microsoft ODBC Driver for SQL Server: `https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-2017`
+How to install the Microsoft ODBC Driver for SQL Server: <https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server?view=sql-server-2017>
 
 ## Install Qanalyser
 
@@ -63,9 +82,11 @@ run the command:
 
 > If you are upgrading from a previous version, you need to remove it first.
 
-## Microsoft SQL Server specifications
+## DBMS specifications
 
-### Add User permissions for SQL Server databases
+### Microsoft SQL Server
+
+#### Add User permissions for SQL Server databases
 
 Qanalyser requires a user with READ and VIEW SERVER STATE permissions on SQL Server databases.
 
