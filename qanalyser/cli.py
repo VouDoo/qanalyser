@@ -35,10 +35,11 @@ class cli():
                 'oracle'
             ],
             help=(
-                'select the DBMS'
+                'name of the DBMS'
             )
         )
         parser.add_argument(
+            '-s',
             '--server',
             type=str,
             required=True,
@@ -47,6 +48,7 @@ class cli():
             )
         )
         parser.add_argument(
+            '-d',
             '--database',
             type=str,
             required=True,
@@ -55,6 +57,7 @@ class cli():
             )
         )
         parser.add_argument(
+            '-u',
             '--username',
             type=str,
             required=True,
@@ -63,27 +66,43 @@ class cli():
             )
         )
         parser.add_argument(
+            '-p',
             '--password',
             type=str,
             required=True,
             help=(
-                'password string of the database user'
+                'password of the database user'
             )
         )
         parser.add_argument(
+            '-l'
             '--top-limit',
             type=str,
             required=True,
             help=(
-                'limit number of top queries'
+                'number of entries for the top'
             )
         )
         parser.add_argument(
-            '--save-html',
+            '-x',
+            '--export',
             type=str,
+            choices=[
+                'csv',
+                'html'
+            ],
             required=True,
             help=(
-                'HTML report path'
+                'type of export'
+            )
+        )
+        parser.add_argument(
+            '-f',
+            '--file',
+            type=str,
+            required=False,
+            help=(
+                'save output in file'
             )
         )
         return parser
