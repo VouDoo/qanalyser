@@ -80,7 +80,7 @@ class cli():
             )
         )
         parser.add_argument(
-            '-l'
+            '-l',
             '--top-limit',
             type=str,
             required=True,
