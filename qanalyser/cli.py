@@ -8,7 +8,12 @@ import sys
 class cli():
     def __init__(self):
         self.args = self._built_parser().parse_args()
-        self.html_file_path = self._gen_html_file_path(self.args.save_html)
+        self.file_path = None
+        if self.args.file:
+            self.file_path = self._gen_file_path(
+                self.args.file,
+                self.args.export_type
+            )
 
     def _built_parser(self):
         import argparse
@@ -85,7 +90,7 @@ class cli():
         )
         parser.add_argument(
             '-x',
-            '--export',
+            '--export-type',
             type=str,
             choices=[
                 'csv',
