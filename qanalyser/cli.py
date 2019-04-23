@@ -189,7 +189,7 @@ def run():
         c.args.export_type
     )
 
-    if c.args.file_path:
+    if c.file_path:
         with open(c.file_path, 'w+') as file_stream:
             file_stream.write(output)
     else:
