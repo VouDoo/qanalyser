@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# All modules below are part of standard distribution for python
+from datetime import datetime
+
 # Python Jinja2 module import
 from jinja2 import Template
 
@@ -70,8 +73,6 @@ class mssql_database(db_odbc):
         return str(column_name).replace('_', ' ').capitalize()
 
     def _stats_report_html(self):
-        from datetime import datetime
-
         with open(
             file=self.STATS_REPORT_HTML_J2,
             mode='r'
