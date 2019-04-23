@@ -112,29 +112,38 @@ class cli():
 
         return normcase(normpath(path))
 
-    def _gen_html_file_path(self, path):
+    def _gen_file_path(self, path, type):
         from os.path import isdir
         from os.path import join
 
-        default_filename = '{dbms}_{server}_{database}_report.html'.format(
+        default_filename = '{dbms}_{server}_{database}'.format(
             dbms=self.args.dbms,
             server=self.args.server,
             database=self.args.database
         )
-        filename_extentions = (
-            '.html',
-            '.htm'
-        )
+
+        if type == 'html':
+            valid_extentions = (
+                '.html',
+                '.htm'
+            )
+            default_extention = '.html'
+        if type == 'csv':
+            valid_extentions = (
+                '.csv'
+            )
+            default_extention = '.csv'
 
         formated_path = self._format_path(path)
         if isdir(formated_path):
             return join(
                 formated_path,
-                default_filename
+                default_filename,
+                default_extention
             )
         else:
-            if not formated_path.endswith(filename_extentions):
-                formated_path += '.html'
+            if not formated_path.endswith(valid_extentions):
+                formated_path += default_extention
             return formated_path
 
 
