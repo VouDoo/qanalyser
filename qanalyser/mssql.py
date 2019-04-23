@@ -62,6 +62,8 @@ class mssql_database(db_odbc):
 
         if type == 'html':
             return self._stats_report_html()
+        elif type == 'xml':
+            return self._stats_report_xml()
         else:
             print(
                 'Cannot generate the stats report. '
