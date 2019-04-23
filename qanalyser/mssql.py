@@ -178,7 +178,7 @@ class mssql_database(db_odbc):
                     column_elem.text = str(row[i])
                 rank += 1
         root.set(
-            'generation_time',
+            'reported_datetime',
             datetime.now().strftime('%d-%m-%Y_%H:%M')
         )
 
