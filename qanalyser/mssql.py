@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# All modules below are part of standard distribution for python
-from os.path import dirname
-from os.path import join as join_path
-from datetime import datetime
-
 # Python Jinja2 module import
 from jinja2 import Template
 
@@ -15,6 +10,9 @@ from .odbc import db_odbc
 
 class mssql_database(db_odbc):
     def __init__(self, server, database, username, password, top_limit):
+        from os.path import dirname
+        from os.path import join as join_path
+
         # Server / Database
         self.server = str(server)
         self.database = str(database)
@@ -72,6 +70,8 @@ class mssql_database(db_odbc):
         return str(column_name).replace('_', ' ').capitalize()
 
     def _stats_report_html(self):
+        from datetime import datetime
+
         with open(
             file=self.STATS_REPORT_HTML_J2,
             mode='r'
