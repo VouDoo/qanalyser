@@ -166,16 +166,24 @@ def run():
             c.args.password,
             c.args.top_limit
         )
-        html = db_object.stats_report_html()
-        html_file = c.html_file_path
-        with open(html_file, 'w+') as file_stream:
-            file_stream.write(html)
 
     elif c.args.dbms == 'openedge':
         print('Progress OpenEdge is not supported yet.')
+        sys.exit(0)
 
     elif c.args.dbms == 'oracle':
         print('Oracle is not supported yet.')
+        sys.exit(0)
+
+    output = db_object.stats_report(
+        c.args.export_type
+    )
+
+    if c.args.file_path:
+        with open(c.file_path, 'w+') as file_stream:
+            file_stream.write(output)
+    else:
+        print(output)
 
     # Exit the application without error
     sys.exit(0)
