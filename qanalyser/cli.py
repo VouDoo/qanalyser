@@ -168,12 +168,22 @@ def run():
         )
 
     elif c.args.dbms == 'openedge':
-        print('Progress OpenEdge is not supported yet.')
+        print(
+            'Progress OpenEdge will be supported in '
+            'the upcoming releases, stay tuned!',
+        )
         sys.exit(0)
-
     elif c.args.dbms == 'oracle':
-        print('Oracle is not supported yet.')
+        print(
+            'Oracle will be supported in'
+            'the upcoming releases, stay tuned!',
+        )
         sys.exit(0)
+    else:
+        print(
+            '{} is not supported.'.format(c.args.dbms),
+            file=sys.stderr
+        )
 
     output = db_object.stats_report(
         c.args.export_type
