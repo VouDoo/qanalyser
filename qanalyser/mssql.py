@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # All modules below are part of standard distribution for python
-from os.path import dirname
-from os.path import join as join_path
 from datetime import datetime
 
 # Python Jinja2 module import
@@ -15,6 +13,9 @@ from .odbc import db_odbc
 
 class mssql_database(db_odbc):
     def __init__(self, server, database, username, password, top_limit):
+        from os.path import dirname
+        from os.path import join as join_path
+
         # Server / Database
         self.server = str(server)
         self.database = str(database)
@@ -42,9 +43,6 @@ class mssql_database(db_odbc):
         # Limit number of queries
         self.top_limit = int(top_limit)
 
-    def _beautify_column_name(self, column_name):
-        return str(column_name).replace('_', ' ').capitalize()
-
     def stats_query(self, order_by):
         with open(
             file=self.STATS_QUERY_SQL_J2,
@@ -59,7 +57,24 @@ class mssql_database(db_odbc):
         columns, rows = self.select_query(query)
         return columns, rows
 
-    def stats_report_html(self):
+    def stats_report(self, type):
+        from sys import stderr
+
+        if type == 'html':
+            return self._stats_report_html()
+        elif type == 'xml':
+            return self._stats_report_xml()
+        else:
+            print(
+                'Cannot generate the stats report. '
+                'The type "{}" is not supported.'.format(type),
+                file=stderr
+            )
+
+    def _beautify_column_name(self, column_name):
+        return str(column_name).replace('_', ' ').capitalize()
+
+    def _stats_report_html(self):
         with open(
             file=self.STATS_REPORT_HTML_J2,
             mode='r'
@@ -130,3 +145,41 @@ class mssql_database(db_odbc):
             report_time=report_datetime.strftime('%H:%M')
         )
         return html
+
+    def _stats_report_xml(self):
+        import xml.etree.cElementTree as ET
+
+        order_by_list = (
+            'execution_count',
+            'total_logical_reads',
+            'total_logical_writes',
+            'total_worker_time',
+            'total_elapsed_time'
+        )
+
+        root = ET.Element("report")  # Initialize tree
+        server_elem = ET.SubElement(root, 'server')
+        server_elem.text = self.server
+        database_elem = ET.SubElement(root, 'database')
+        database_elem.text = self.database
+        top_elem = ET.SubElement(root, 'top_queries')
+        top_elem.set('limit', str(self.top_limit))
+        for order_by in order_by_list:
+            columns, rows = self.stats_query(order_by)
+            order_by_elem = ET.SubElement(top_elem, 'order_by')
+            order_by_elem.set('name', order_by)
+            rank = 1
+            for row in rows:
+                query_elem = ET.SubElement(order_by_elem, 'query')
+                query_elem.set('rank', str(rank))
+                for i in range(len(columns)):
+                    column_elem = ET.SubElement(query_elem, 'column')
+                    column_elem.set('name', str(columns[i]))
+                    column_elem.text = str(row[i])
+                rank += 1
+        root.set(
+            'generation_time',
+            datetime.now().strftime('%d-%m-%Y_%H:%M')
+        )
+
+        return ET.tostring(root).decode()

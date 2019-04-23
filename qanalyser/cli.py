@@ -8,7 +8,12 @@ import sys
 class cli():
     def __init__(self):
         self.args = self._built_parser().parse_args()
-        self.html_file_path = self._gen_html_file_path(self.args.save_html)
+        self.file_path = None
+        if self.args.file:
+            self.file_path = self._gen_file_path(
+                self.args.file,
+                self.args.export_type
+            )
 
     def _built_parser(self):
         import argparse
@@ -35,10 +40,11 @@ class cli():
                 'oracle'
             ],
             help=(
-                'select the DBMS'
+                'name of the DBMS'
             )
         )
         parser.add_argument(
+            '-s',
             '--server',
             type=str,
             required=True,
@@ -47,6 +53,7 @@ class cli():
             )
         )
         parser.add_argument(
+            '-d',
             '--database',
             type=str,
             required=True,
@@ -55,6 +62,7 @@ class cli():
             )
         )
         parser.add_argument(
+            '-u',
             '--username',
             type=str,
             required=True,
@@ -63,27 +71,43 @@ class cli():
             )
         )
         parser.add_argument(
+            '-p',
             '--password',
             type=str,
             required=True,
             help=(
-                'password string of the database user'
+                'password of the database user'
             )
         )
         parser.add_argument(
+            '-l',
             '--top-limit',
             type=str,
             required=True,
             help=(
-                'limit number of top queries'
+                'number of entries for the top'
             )
         )
         parser.add_argument(
-            '--save-html',
+            '-x',
+            '--export-type',
             type=str,
+            choices=[
+                'html',
+                'xml'
+            ],
             required=True,
             help=(
-                'HTML report path'
+                'type of export'
+            )
+        )
+        parser.add_argument(
+            '-f',
+            '--file',
+            type=str,
+            required=False,
+            help=(
+                'save output in file'
             )
         )
         return parser
@@ -93,29 +117,38 @@ class cli():
 
         return normcase(normpath(path))
 
-    def _gen_html_file_path(self, path):
+    def _gen_file_path(self, path, type):
         from os.path import isdir
         from os.path import join
 
-        default_filename = '{dbms}_{server}_{database}_report.html'.format(
+        default_filename = '{dbms}_{server}_{database}'.format(
             dbms=self.args.dbms,
             server=self.args.server,
             database=self.args.database
         )
-        filename_extentions = (
-            '.html',
-            '.htm'
-        )
+
+        if type == 'html':
+            valid_extentions = (
+                '.html',
+                '.htm'
+            )
+            default_extention = '.html'
+        if type == 'xml':
+            valid_extentions = (
+                '.xml'
+            )
+            default_extention = '.xml'
 
         formated_path = self._format_path(path)
         if isdir(formated_path):
             return join(
                 formated_path,
-                default_filename
+                default_filename,
+                default_extention
             )
         else:
-            if not formated_path.endswith(filename_extentions):
-                formated_path += '.html'
+            if not formated_path.endswith(valid_extentions):
+                formated_path += default_extention
             return formated_path
 
 
@@ -133,16 +166,34 @@ def run():
             c.args.password,
             c.args.top_limit
         )
-        html = db_object.stats_report_html()
-        html_file = c.html_file_path
-        with open(html_file, 'w+') as file_stream:
-            file_stream.write(html)
 
     elif c.args.dbms == 'openedge':
-        print('Progress OpenEdge is not supported yet.')
-
+        print(
+            'Progress OpenEdge will be supported in '
+            'the upcoming releases, stay tuned!',
+        )
+        sys.exit(0)
     elif c.args.dbms == 'oracle':
-        print('Oracle is not supported yet.')
+        print(
+            'Oracle will be supported in'
+            'the upcoming releases, stay tuned!',
+        )
+        sys.exit(0)
+    else:
+        print(
+            '{} is not supported.'.format(c.args.dbms),
+            file=sys.stderr
+        )
+
+    output = db_object.stats_report(
+        c.args.export_type
+    )
+
+    if c.file_path:
+        with open(c.file_path, 'w+') as file_stream:
+            file_stream.write(output)
+    else:
+        print(output)
 
     # Exit the application without error
     sys.exit(0)
