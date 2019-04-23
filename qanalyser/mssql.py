@@ -143,3 +143,41 @@ class mssql_database(db_odbc):
             report_time=report_datetime.strftime('%H:%M')
         )
         return html
+
+    def _stats_report_xml(self):
+        import xml.etree.cElementTree as ET
+
+        order_by_list = (
+            'execution_count',
+            'total_logical_reads',
+            'total_logical_writes',
+            'total_worker_time',
+            'total_elapsed_time'
+        )
+
+        root = ET.Element("report")  # Initialize tree
+        server_elem = ET.SubElement(root, 'server')
+        server_elem.text = self.server
+        database_elem = ET.SubElement(root, 'database')
+        database_elem.text = self.database
+        top_elem = ET.SubElement(root, 'top_queries')
+        top_elem.set('limit', str(self.top_limit))
+        for order_by in order_by_list:
+            columns, rows = self.stats_query(order_by)
+            order_by_elem = ET.SubElement(top_elem, 'order_by')
+            order_by_elem.set('name', order_by)
+            rank = 1
+            for row in rows:
+                query_elem = ET.SubElement(order_by_elem, 'query')
+                query_elem.set('rank', str(rank))
+                for i in range(len(columns)):
+                    column_elem = ET.SubElement(query_elem, 'column')
+                    column_elem.set('name', str(columns[i]))
+                    column_elem.text = str(row[i])
+                rank += 1
+        root.set(
+            'generation_time',
+            datetime.now().strftime('%d-%m-%Y_%H:%M')
+        )
+
+        return ET.tostring(root).decode()
