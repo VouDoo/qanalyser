@@ -61,8 +61,8 @@ class mssql_database(db_odbc):
             return self._stats_report_html()
         else:
             print(
-                'cannot generate the stats report because '
-                'the type {} is not supported'.format(type),
+                'Cannot generate the stats report. '
+                'The type "{}" is not supported.'.format(type),
                 file=stderr
             )
 
