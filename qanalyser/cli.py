@@ -93,8 +93,8 @@ class cli():
             '--export-type',
             type=str,
             choices=[
-                'csv',
-                'html'
+                'html',
+                'xml'
             ],
             required=True,
             help=(
@@ -133,11 +133,11 @@ class cli():
                 '.htm'
             )
             default_extention = '.html'
-        if type == 'csv':
+        if type == 'xml':
             valid_extentions = (
-                '.csv'
+                '.xml'
             )
-            default_extention = '.csv'
+            default_extention = '.xml'
 
         formated_path = self._format_path(path)
         if isdir(formated_path):
