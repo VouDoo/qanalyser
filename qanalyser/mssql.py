@@ -42,9 +42,6 @@ class mssql_database(db_odbc):
         # Limit number of queries
         self.top_limit = int(top_limit)
 
-    def _beautify_column_name(self, column_name):
-        return str(column_name).replace('_', ' ').capitalize()
-
     def stats_query(self, order_by):
         with open(
             file=self.STATS_QUERY_SQL_J2,
@@ -59,7 +56,22 @@ class mssql_database(db_odbc):
         columns, rows = self.select_query(query)
         return columns, rows
 
-    def stats_report_html(self):
+    def stats_report(self, type):
+        from sys import stderr
+
+        if type == 'html':
+            return self._stats_report_html()
+        else:
+            print(
+                'cannot generate the stats report because '
+                'the type {} is not supported'.format(type),
+                file=stderr
+            )
+
+    def _beautify_column_name(self, column_name):
+        return str(column_name).replace('_', ' ').capitalize()
+
+    def _stats_report_html(self):
         with open(
             file=self.STATS_REPORT_HTML_J2,
             mode='r'
