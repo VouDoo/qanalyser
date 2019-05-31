@@ -19,7 +19,7 @@ After the analysis, an HTML report is generated with "top" tables depending on c
 
 ## Installation
 
-Please, read the file **INSTALL.md** for getting all the instructions.
+Please, read the file **docs/installation.md** for getting all the instructions.
 
 These instructions will get you a copy of the project up and running on your local machine.
 
