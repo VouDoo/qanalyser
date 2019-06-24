@@ -23,11 +23,11 @@ SELECT TOP {{ top_limit }}
     QS.total_elapsed_time / 1000000 AS total_elapsed_time_in_second,
     QS.last_elapsed_time / 1000000 AS last_elapsed_time_in_second,
     QS.last_execution_time
-    -- qp.query_plan
+    -- QP.query_plan
 FROM
     sys.dm_exec_query_stats QS
     CROSS APPLY sys.dm_exec_sql_text(QS.sql_handle) QT
-    CROSS APPLY sys.dm_exec_query_plan(QS.plan_handle) qp
+    CROSS APPLY sys.dm_exec_query_plan(QS.plan_handle) QP
 WHERE
     QP.dbid = DB_ID('{{ database }}')
 ORDER BY
