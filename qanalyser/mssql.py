@@ -22,11 +22,11 @@ class mssql_database(db_odbc):
 
         # ODBC object
         super().__init__(
-            'mssql',
-            self.server,
-            self.database,
-            str(username),
-            str(password)
+            dbms='mssql',
+            server=self.server,
+            uid=str(username),
+            pwd=str(password),
+            database=self.database,
         )
 
         # Jinja2 Templates
