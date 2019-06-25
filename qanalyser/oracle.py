@@ -50,17 +50,14 @@ class oracle_database(db_odbc):
         raise Exception('Stats query is in development for Oracle.')
 
     def stats_report(self, type):
-        from sys import stderr
-
         if type == 'html':
             return self._stats_report_html()
         elif type == 'xml':
             return self._stats_report_xml()
         else:
-            print(
+            raise Exception(
                 'Cannot generate the stats report. '
-                'The type "{}" is not supported.'.format(type),
-                file=stderr
+                'The type "{}" is not supported.'.format(type)
             )
 
     def _stats_report_html(self):

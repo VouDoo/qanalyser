@@ -197,9 +197,8 @@ def run():
             top_limit=c.args.top_limit
         )
     else:
-        print(
-            '{} is not supported.'.format(c.args.dbms),
-            file=sys.stderr
+        raise Exception(
+            '{} is not supported.'.format(c.args.dbms)
         )
 
     output = db_object.stats_report(
