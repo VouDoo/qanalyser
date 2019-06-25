@@ -6,22 +6,82 @@ import pyodbc
 
 
 class db_odbc():
-    def __init__(self, dbms, server, database, uid, pwd):
+    def __init__(
+        self,
+        dbms,
+        server,
+        uid,
+        pwd,
+        service_name=None,
+        database=None,
+        port=None,
+    ):
         if dbms == 'mssql':
             # Microsoft SQL driver name for ODBC
-            driver = '{ODBC Driver 17 for SQL Server}'
+            driver = 'ODBC Driver 17 for SQL Server'
+            if driver not in pyodbc.drivers():
+                raise Exception(
+                    'The ODBC driver "{}" does not exist.'.format(
+                        driver
+                    )
+                )
+            # Gererate the ODBC string
+            if database is None:
+                raise Exception(
+                    'The database name is mandatory '
+                    'to initialize the ODBC connection '
+                    'to a Microsoft SQL server database.'
+                )
+            if port is None:
+                port = '1433'  # Default instance running over TCP port
             self.odbc_string = (
                 'DRIVER={driver};'
-                'SERVER={server};'
+                'SERVER={server},{port};'
                 'DATABASE={database};'
                 'UID={uid};'
                 'PWD={pwd};'
             ).format(
-                driver=driver,
+                driver=('{' + driver + '}'),
                 server=server,
+                port=port,
                 database=database,
                 uid=uid,
                 pwd=pwd
+            )
+        elif dbms == 'oracle':
+            # Oracle data source for ODBC
+            data_source = 'QanalyserOracle'
+            if data_source not in pyodbc.dataSources():
+                raise Exception(
+                    'The ODBC data source "{}" does not exist.'.format(
+                        data_source
+                    )
+                )
+            # Gererate the ODBC string
+            if service_name is None:
+                raise Exception(
+                    'The service name is mandatory '
+                    'to initialize the ODBC connection '
+                    'to an Oracle database.'
+                )
+            if port is None:
+                port = '1521'  # Default Oracle SQL*Net Listener port
+            self.odbc_string = (
+                'DSN={data_source};'
+                'DQB={server}:{port}/{service_name};'
+                'UID={uid};'
+                'PWD={pwd};'
+            ).format(
+                data_source=data_source,
+                server=server,
+                port=port,
+                service_name=service_name,
+                uid=uid,
+                pwd=pwd
+            )
+        else:
+            raise Exception(
+                'The ODBC connection cannot be initialized for this DBMS.'
             )
 
     def select_query(self, query):
