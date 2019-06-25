@@ -29,7 +29,9 @@ class cli():
         )
         parser = argparse.ArgumentParser(
             description=parser_desc,
-            epilog=parser_epilog
+            epilog=parser_epilog,
+            usage='use "python -m qanalyser --help" for more information',
+            formatter_class=argparse.RawTextHelpFormatter
         )
         parser.add_argument(
             'dbms',
@@ -40,7 +42,7 @@ class cli():
                 'oracle'
             ],
             help=(
-                'name of the DBMS'
+                'name of the database management system'
             )
         )
         parser.add_argument(
@@ -49,16 +51,27 @@ class cli():
             type=str,
             required=True,
             help=(
-                'name of the database server'
+                'hostname of the database server'
             )
         )
         parser.add_argument(
-            '-d',
-            '--database',
+            '-P',
+            '--port',
+            type=str,
+            required=False,
+            help=(
+                'port to connect'
+            )
+        )
+        parser.add_argument(
+            '-i',
+            '--instance',
             type=str,
             required=True,
             help=(
-                'name of the database'
+                'name of the instance:\n'
+                '- database name (dbms: mssql)\n'
+                '- service name (dbms: oracle)'
             )
         )
         parser.add_argument(
@@ -80,15 +93,6 @@ class cli():
             )
         )
         parser.add_argument(
-            '-l',
-            '--top-limit',
-            type=str,
-            required=True,
-            help=(
-                'number of entries for the top'
-            )
-        )
-        parser.add_argument(
             '-x',
             '--export-type',
             type=str,
@@ -99,6 +103,15 @@ class cli():
             required=True,
             help=(
                 'type of export'
+            )
+        )
+        parser.add_argument(
+            '-l',
+            '--top-limit',
+            type=str,
+            required=True,
+            help=(
+                'limit of entries for the top-ranking'
             )
         )
         parser.add_argument(
@@ -121,10 +134,10 @@ class cli():
         from os.path import isdir
         from os.path import join
 
-        default_filename = '{dbms}_{server}_{database}'.format(
+        default_filename = '{dbms}_{server}_{instance}'.format(
             dbms=self.args.dbms,
             server=self.args.server,
-            database=self.args.database
+            instance=self.args.instance
         )
 
         if type == 'html':
@@ -160,11 +173,11 @@ def run():
 
     if c.args.dbms == 'mssql':
         db_object = mssql_database(
-            c.args.server,
-            c.args.database,
-            c.args.username,
-            c.args.password,
-            c.args.top_limit
+            server=c.args.server,
+            database=c.args.instance,
+            username=c.args.username,
+            password=c.args.password,
+            top_limit=c.args.top_limit
         )
 
     elif c.args.dbms == 'openedge':
