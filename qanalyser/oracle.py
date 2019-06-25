@@ -46,36 +46,25 @@ class oracle_database(db_odbc):
         # Limit number of queries
         self.top_limit = int(top_limit)
 
-        def stats_query(self, order_by):
-            with open(
-                file=self.STATS_QUERY_SQL_J2,
-                mode='r'
-            ) as file_stream:
-                query_template = Template(file_stream.read())
-            query = query_template.render(
-                top_limit=self.top_limit,
-                database=self.database,
-                order_by=order_by
+    def stats_query(self, order_by):
+        raise Exception('Stats query is in development for Oracle.')
+
+    def stats_report(self, type):
+        from sys import stderr
+
+        if type == 'html':
+            return self._stats_report_html()
+        elif type == 'xml':
+            return self._stats_report_xml()
+        else:
+            print(
+                'Cannot generate the stats report. '
+                'The type "{}" is not supported.'.format(type),
+                file=stderr
             )
-            columns, rows = self.select_query(query)
-            return columns, rows
 
-        def stats_report(self, type):
-            from sys import stderr
+    def _stats_report_html(self):
+        raise Exception('HTML report is not supported for Oracle.')
 
-            if type == 'html':
-                return self._stats_report_html()
-            elif type == 'xml':
-                return self._stats_report_xml()
-            else:
-                print(
-                    'Cannot generate the stats report. '
-                    'The type "{}" is not supported.'.format(type),
-                    file=stderr
-                )
-
-        def _stats_report_html(self):
-            raise Exception('HTML report is not supported for Oracle.')
-
-        def _stats_report_xml(self):
-            raise Exception('XML report is not supported for Oracle.')
+    def _stats_report_xml(self):
+        raise Exception('XML report is not supported for Oracle.')
