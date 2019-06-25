@@ -20,12 +20,9 @@ class mssql_database(db_odbc):
         self.server = str(server)
         self.database = str(database)
 
-        # Microsoft SQL driver name for ODBC
-        driver = '{ODBC Driver 17 for SQL Server}'
-
         # ODBC object
         super().__init__(
-            driver,
+            'mssql',
             self.server,
             self.database,
             str(username),

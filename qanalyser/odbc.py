@@ -6,20 +6,23 @@ import pyodbc
 
 
 class db_odbc():
-    def __init__(self, driver, server, database, uid, pwd):
-        self.odbc_string = (
-            'DRIVER={driver};'
-            'SERVER={server};'
-            'DATABASE={database};'
-            'UID={uid};'
-            'PWD={pwd};'
-        ).format(
-            driver=driver,
-            server=server,
-            database=database,
-            uid=uid,
-            pwd=pwd
-        )
+    def __init__(self, dbms, server, database, uid, pwd):
+        if dbms == 'mssql':
+            # Microsoft SQL driver name for ODBC
+            driver = '{ODBC Driver 17 for SQL Server}'
+            self.odbc_string = (
+                'DRIVER={driver};'
+                'SERVER={server};'
+                'DATABASE={database};'
+                'UID={uid};'
+                'PWD={pwd};'
+            ).format(
+                driver=driver,
+                server=server,
+                database=database,
+                uid=uid,
+                pwd=pwd
+            )
 
     def select_query(self, query):
         try:
