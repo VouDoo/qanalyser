@@ -12,20 +12,29 @@ from .odbc import db_odbc
 
 
 class mssql_database(db_odbc):
-    def __init__(self, server, database, username, password, top_limit):
+    def __init__(
+        self,
+        server,
+        database,
+        username,
+        password,
+        top_limit,
+        port=None
+    ):
         from os.path import dirname
         from os.path import join as join_path
 
         # Server / Database
-        self.server = str(server)
-        self.database = str(database)
+        self.server = server
+        self.database = database
 
         # ODBC object
         super().__init__(
             dbms='mssql',
             server=self.server,
-            uid=str(username),
-            pwd=str(password),
+            port=port,
+            uid=username,
+            pwd=password,
             database=self.database,
         )
 

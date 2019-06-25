@@ -14,7 +14,7 @@ class db_odbc():
         pwd,
         service_name=None,
         database=None,
-        port=None,
+        port='',
     ):
         if dbms == 'mssql':
             # Microsoft SQL driver name for ODBC
@@ -41,7 +41,7 @@ class db_odbc():
                 'UID={uid};'
                 'PWD={pwd};'
             ).format(
-                driver=('{' + driver + '}'),
+                driver=str('{' + driver + '}'),
                 server=server,
                 port=port,
                 database=database,

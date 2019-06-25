@@ -57,7 +57,7 @@ class cli():
         parser.add_argument(
             '-P',
             '--port',
-            type=str,
+            type=int,
             required=False,
             help=(
                 'port to connect'
@@ -137,7 +137,7 @@ class cli():
         default_filename = '{dbms}_{server}_{instance}'.format(
             dbms=self.args.dbms,
             server=self.args.server,
-            instance=self.args.instance
+            instance=self.args.instance.replace('.', '-')
         )
 
         if type == 'html':
@@ -168,30 +168,34 @@ class cli():
 def run():
     # Application modules
     from .mssql import mssql_database
+    from .oracle import oracle_database
 
     c = cli()
 
     if c.args.dbms == 'mssql':
         db_object = mssql_database(
             server=c.args.server,
+            port=c.args.port,
             database=c.args.instance,
             username=c.args.username,
             password=c.args.password,
             top_limit=c.args.top_limit
         )
-
     elif c.args.dbms == 'openedge':
         print(
             'Progress OpenEdge will be supported in '
-            'the upcoming releases, stay tuned!',
+            'the upcoming releases, stay tuned!'
         )
         sys.exit(0)
     elif c.args.dbms == 'oracle':
-        print(
-            'Oracle will be supported in'
-            'the upcoming releases, stay tuned!',
+        db_object = oracle_database(
+            server=c.args.server,
+            port=c.args.port,
+            service_name=c.args.instance,
+            username=c.args.username,
+            password=c.args.password,
+            top_limit=c.args.top_limit
         )
-        sys.exit(0)
     else:
         print(
             '{} is not supported.'.format(c.args.dbms),
