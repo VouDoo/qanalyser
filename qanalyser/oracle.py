@@ -12,7 +12,7 @@ class oracle_database(db_odbc):
     def __init__(
         self,
         server,
-        service_name,
+        instance,
         username,
         password,
         top_limit,
@@ -23,16 +23,28 @@ class oracle_database(db_odbc):
 
         # Server / Database
         self.server = server
-        self.service_name = service_name
+        self.instance = instance
+
+        # Port
+        if port is None:
+            port = 1521  # Default Oracle SQL*Net Listener port
+
+        # Oracle ODBC data source
+        data_source = 'QanalyserOracle'
+
+        # Connection string for ODBC
+        odbc_string = self._generate_odbc_string(
+            data_source=data_source,
+            server=server,
+            port=str(port),
+            instance=instance,
+            uid=username,
+            pwd=password
+        )
 
         # ODBC object
         super().__init__(
-            dbms='oracle',
-            server=self.server,
-            port=port,
-            uid=username,
-            pwd=password,
-            service_name=self.service_name,
+            odbc_string=odbc_string
         )
 
         # Jinja2 Templates
@@ -59,6 +71,29 @@ class oracle_database(db_odbc):
                 'Cannot generate the stats report. '
                 'The type "{}" is not supported.'.format(type)
             )
+
+    def _generate_odbc_string(
+        self,
+        data_source,
+        server,
+        port,
+        instance,
+        uid,
+        pwd
+    ):
+        return (
+            'DSN={data_source};'
+            'DQB={server}:{port}/{instance};'
+            'UID={uid};'
+            'PWD={pwd};'
+        ).format(
+            data_source=data_source,
+            server=server,
+            port=port,
+            instance=instance,
+            uid=uid,
+            pwd=pwd
+        )
 
     def _stats_report_html(self):
         raise Exception('HTML report is not supported for Oracle.')

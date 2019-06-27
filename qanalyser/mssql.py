@@ -28,14 +28,26 @@ class mssql_database(db_odbc):
         self.server = server
         self.database = database
 
+        # Port
+        if port is None:
+            port = 1433  # Default instance running over TCP port
+
+        # Microsoft SQL Server ODBC driver
+        driver = 'ODBC Driver 17 for SQL Server'
+
+        # Connection string for ODBC
+        odbc_string = self._generate_odbc_string(
+            driver=driver,
+            server=server,
+            port=str(port),
+            database=database,
+            uid=username,
+            pwd=password
+        )
+
         # ODBC object
         super().__init__(
-            dbms='mssql',
-            server=self.server,
-            port=port,
-            uid=username,
-            pwd=password,
-            database=self.database,
+            odbc_string=odbc_string,
         )
 
         # Jinja2 Templates
@@ -73,6 +85,30 @@ class mssql_database(db_odbc):
                 'Cannot generate the stats report. '
                 'The type "{}" is not supported.'.format(type)
             )
+
+    def _generate_odbc_string(
+        self,
+        driver,
+        server,
+        port,
+        database,
+        uid,
+        pwd
+    ):
+        return (
+            'DRIVER={driver};'
+            'SERVER={server},{port};'
+            'DATABASE={database};'
+            'UID={uid};'
+            'PWD={pwd};'
+        ).format(
+            driver=('{' + driver + '}'),
+            server=server,
+            port=port,
+            database=database,
+            uid=uid,
+            pwd=pwd
+        )
 
     def _beautify_column_name(self, column_name):
         return str(column_name).replace('_', ' ').capitalize()

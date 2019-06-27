@@ -71,7 +71,8 @@ class cli():
             help=(
                 'name of the instance:\n'
                 '- database name (dbms: mssql)\n'
-                '- service name (dbms: oracle)'
+                '- service name (dbms: oracle)\n'
+                '- SID (dbms: oracle)'
             )
         )
         parser.add_argument(
@@ -191,7 +192,7 @@ def run():
         db_object = oracle_database(
             server=c.args.server,
             port=c.args.port,
-            service_name=c.args.instance,
+            instance=c.args.instance,
             username=c.args.username,
             password=c.args.password,
             top_limit=c.args.top_limit
